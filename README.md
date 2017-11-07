@@ -52,9 +52,12 @@ the Bolt 3.1+ version**
     [...]
     ```
 
- 3. Add the `is_translateable` argument to all fields you want to be
-    translatable. To translate templatefields you simply tag the templateselect
-    with `is_translateable` and all the templatefields will be translateable.
+ 3. Add the `translatable` argument to all fields you want to be
+    translatable.
+
+    **Note: In older versions the config `translatable` was misspelled as
+    `is_translateable`. The old way is still supported, but deprecated and
+    will be removed in a future version.**
 
     ```
     [...]
@@ -62,11 +65,21 @@ the Bolt 3.1+ version**
         type: text
         class: large
         group: content
-        is_translateable: true
+        translatable: true
     [...]
-    ```
 
- 4. Add the hidden fields to all the contenttypes that have translateable
+    ```
+    To translate templatefields you simply tag the templateselect
+    with `translatable` and all the templatefields will be translatable.
+    ```
+    [...]
+    templateselect:
+        type: templateselect
+        translatable: true
+        filter: '*.twig'
+    [...] 
+    ```
+ 4. Add the hidden fields to all the contenttypes that have translatable
     fields, two for each locale: one called `your_localedata` and one called
     `your_localeslug`. So for the above `locales` example you would put:
 
@@ -146,22 +159,22 @@ pages:
             type: text
             class: large
             group: content
-            is_translateable: true
+            translatable: true
         slug:
             type: slug
             uses: title
-            is_translateable: true
+            translatable: true
         image:
             type: image
-            is_translateable: true
+            translatable: true
         teaser:
             type: html
             height: 150px
-            is_translateable: true
+            translatable: true
         body:
             type: html
             height: 300px
-            is_translateable: true
+            translatable: true
         template:
             type: templateselect
             filter: '*.twig'
@@ -220,6 +233,13 @@ can add the following to the `<head>` of your site:
     <link rel="alternate" hreflang="{{key|replace({'_': '-'})}}" href="{{locale.getUrl()}}">
 {% endfor %}
 ```
+
+### Flag icons
+
+There is a built in function to output flags for use in localeswitchers or
+other places. It is called with `{{ flag_icon(key) }}` where key is a country
+code (like `gb` or `de`). The flags are then embedded in an SVG format. A list
+of available flags can be seen [here](https://github.com/AnimalDesign/bolt-translate/tree/master/templates/flag_icons).
 
 ### Subdomain based routing
 
