@@ -196,11 +196,11 @@ class StorageListener implements EventSubscriberInterface
 
         $record->set($localeSlug . 'slug', $values['slug']);
         $locales = $this->config->getLocales();
-
-        if (isset($values['_locale']) && $values['_locale'] == reset($locales)->getSlug()) {
+        /* This doesn't work on 3.2 with repeater as templatefield */
+/*        if (isset($values['_locale']) && $values['_locale'] == reset($locales)->getSlug()) {
             $record->set($localeSlug . 'data', '[]');
             return;
-        }
+        }*/
 
         if ($values['id']) {
             /** @var Content $defaultContent */
@@ -235,6 +235,9 @@ class StorageListener implements EventSubscriberInterface
         }
         $localeJson = json_encode($localeValues);
         $record->set($localeSlug . 'data', $localeJson);
+        if (isset($values['_locale']) && $values['_locale'] == reset($locales)->getSlug()) {
+            $record->set('slug', $values['slug']);
+        }        
     }
 
     /**
