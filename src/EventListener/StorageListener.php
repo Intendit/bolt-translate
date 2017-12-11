@@ -237,6 +237,9 @@ class StorageListener implements EventSubscriberInterface
         $record->set($localeSlug . 'data', $localeJson);
         if (isset($values['_locale']) && $values['_locale'] == reset($locales)->getSlug()) {
             $record->set('slug', $values['slug']);
+            if (isset($values['title'])) {
+                $record->set('title', $values['title']);
+            }
         }        
     }
 
