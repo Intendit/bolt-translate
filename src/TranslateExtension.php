@@ -6,6 +6,7 @@ use Bolt\Asset\Widget\Widget;
 use Bolt\Asset\Target;
 use Bolt\Controller\Zone;
 use Bolt\Extension\Animal\Translate\Config;
+use Bolt\Extension\Bacboslab\Menueditor\Event\FieldBuilderEvent;
 use Bolt\Extension\SimpleExtension;
 use Silex\Application;
 use Silex\LazyUrlMatcher;
@@ -69,6 +70,12 @@ class TranslateExtension extends SimpleExtension
                     $app['request_stack']
                 )
             );
+
+            /**
+             * Adding listener for menueditor's FieldBuilderEvent
+             */
+            $event = new FieldBuilderEvent();
+            $dispatcher->addListener(FieldBuilderEvent::BUILD, [$this, 'onRequest']);
         }
     }
 
@@ -187,7 +194,7 @@ class TranslateExtension extends SimpleExtension
 
                 return $defaultSlug;
             }
-        );        
+        );
         $app['translate.locales'] = $app->share(
             function ($app) {
                 $config = $app['translate.config'];
@@ -196,9 +203,8 @@ class TranslateExtension extends SimpleExtension
                 } else {
                    return $config->getLocales();
                 }
-
-            }
-        );         
+             }
+        );     
     }
 
     /**
@@ -395,4 +401,15 @@ class TranslateExtension extends SimpleExtension
             'show_flags' => true
         ];
     }
+
+    public function onRequest(FieldBuilderEvent $event)
+    {
+        $labels = [];
+        $config = $this->getConfig();
+        foreach ($config['locales'] as $language) {
+            $labels[] = array('key' => $language['slug'] . 'label', 'value' => '');
+        }
+        $event->setFields($labels);
+    }
+
 }
