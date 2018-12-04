@@ -3,8 +3,9 @@
 namespace Bolt\Extension\Animal\Translate\Field;
 
 use Bolt\Storage\Field\FieldInterface;
+use Bolt\Storage\Field\Type\FieldTypeBase;
 
-class LocaleField implements FieldInterface
+class LocaleField extends FieldTypeBase implements FieldInterface
 {
     public function getName()
     {
@@ -24,10 +25,5 @@ class LocaleField implements FieldInterface
     public function getStorageOptions()
     {
         return ['default' => ''];
-    }
-
-    public function load()
-    {
-        return null;
     }
 }
