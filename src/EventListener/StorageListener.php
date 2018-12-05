@@ -138,7 +138,7 @@ class StorageListener implements EventSubscriberInterface
         }
         $localeData = json_decode($subject[$localeSlug . 'data'], true);
         foreach ($localeData as $key => $value) {
-            if ($key === 'templatefields' && !($subject['template'] === null && !isset($contentType['record_template']))) {
+            if ($key === 'templatefields' && !($subject['template'] === null && !isset($contentType['record_template'])) && !empty($value)) {
                 if (isset($subject['template']) && $subject['template'] === null) {
                     $templateFields = $this->boltConfig->get('theme/templatefields/' . $contentType['record_template'] . '/fields');
                 } else {
@@ -196,10 +196,11 @@ class StorageListener implements EventSubscriberInterface
 
         $record->set($localeSlug . 'slug', $values['slug']);
         $locales = $this->config->getLocales();
-        if (isset($values['_locale']) && $values['_locale'] == reset($locales)->getSlug()) {
+         /* This doesn't work on 3.6 with repeater as templatefield */
+        /*if (isset($values['_locale']) && $values['_locale'] == reset($locales)->getSlug()) {
             $record->set($localeSlug . 'data', '[]');
             return;
-        }
+        }*/
 
         if ($values['id']) {
             /** @var Content $defaultContent */
@@ -234,6 +235,12 @@ class StorageListener implements EventSubscriberInterface
         }
         $localeJson = json_encode($localeValues);
         $record->set($localeSlug . 'data', $localeJson);
+        if (isset($values['_locale']) && $values['_locale'] == reset($locales)->getSlug()) {
+            $record->set('slug', $values['slug']);
+            if (isset($values['title'])) {
+                $record->set('title', $values['title']);
+            }            
+        }        
     }
 
     /**
