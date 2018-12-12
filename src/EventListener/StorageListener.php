@@ -146,7 +146,7 @@ class StorageListener implements EventSubscriberInterface
                 }
                 if (is_array($templateFields)) {
                     foreach ($templateFields as $key => $field) {
-                        if ($field['type'] === 'repeater') {
+                        if ($field['type'] === 'repeater' && !isset($subject['templatefields'])) {
                             $repeaterData = json_decode($value[$key], true);
                             /** @var RepeatingFieldCollection[] $subject */
                             $subject['templatefields'][$key]->clear();
@@ -218,8 +218,9 @@ class StorageListener implements EventSubscriberInterface
             }
             if (is_array($templateFields)) {
                 foreach ($templateFields as $key => $field) {
-                    if ($field['type'] === 'repeater') {
+                    if ($field['type'] === 'repeater' && !isset($values['templatefields'])) {
                         $values['templatefields'][$key] = json_encode($values['templatefields'][$key]);
+
                     }
                 }
             }

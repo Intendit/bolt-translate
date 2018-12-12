@@ -94,7 +94,7 @@ class Legacy extends Storage
                         }
                         if ( is_array($templateFields) ) {
                             foreach ($templateFields as $key => $field) {
-                                if ($field['type'] === 'repeater') {
+                                if ($field['type'] === 'repeater' && !isset($value[$key])) {
                                     $localeData = json_decode($value[$key], true);
                                     $originalMapping = null;
                                     $originalMapping[$key]['fields'] = $templateFields[$key]['fields'];
