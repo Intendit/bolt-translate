@@ -225,11 +225,10 @@ class StorageListener implements EventSubscriberInterface
                 }
             }
         }
-
         foreach ($translatableFields as $field) {
             $localeValues[$field] = isset($values[$field]) ? $values[$field] : null;
             if ($values['id']) {
-                $record->set($field, $defaultContent->get($field));
+                $record->set($field, $values[$field]);
             } else {
                 $record->set($field, '');
             }
@@ -241,7 +240,10 @@ class StorageListener implements EventSubscriberInterface
             if (isset($values['title'])) {
                 $record->set('title', $values['title']);
             }            
-        }        
+        }    
+        if ( isset( $values['templatefields'] ) ) {
+            $record->set('templatefields', $values['templatefields']);
+        }            
     }
 
     /**
@@ -268,8 +270,10 @@ class StorageListener implements EventSubscriberInterface
         }
 
         $localeData = json_decode($subject[$localeSlug . 'data']);
-        foreach ($localeData as $key => $value) {
-            $subject->set($key, $value);
+        if (is_array($localeData)) {
+            foreach ($localeData as $key => $value) {
+                $subject->set($key, $value);
+            }
         }
     }
 
